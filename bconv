@@ -1,0 +1,127 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Licensed under the GNU General Public License, version 3.
+# See the file http://www.gnu.org/copyleft/gpl.txt
+
+# version 0.9 Copyright Nick Demou ndemou@enlogic.gr 2012
+
+# todo: 
+# dot-braille handling doesn't support all the options that pybraille 
+# gives me like setting non-default options for all of the following:
+#    prefix  delimiter  suffix   valid_chars
+
+import pybraille
+import optparse
+import sys
+
+def main():
+    reload(sys).setdefaultencoding('utf8')
+    usage = '''usage: %prog -f FROM -t TO [other options] [input]
+    
+Convert from/to various typef of braille text. The supported TYPES OF BRAILLE
+are the following:
+
+  a = Braille ASCII*  e.g. CDE    (North American/ΜΙΤ Code)
+  u = Unicode Braille e.g. ⠉⠙⠑
+  d = dots Braille    e.g. p14p145p15
+  p = pseudo Braille  e.g. o o  o .  o o
+                           o .  . o  o o
+                           o .  . .  . .   
+EXAMPLES
+
+# %prog -f d -t u p1p12p14p145
+⠁⠃⠉⠙
+# %prog -f a -t u ABCD
+⠁⠃⠉⠙
+# %prog -f u -t d ⠁⠃⠉⠙
+p1p12p14p145
+# %prog -f u -t a ⠁⠃⠉⠙
+ABCD
+# %prog -s -f u -t p ⠁⠃⠉⠙
+o .  o .  o o  o o
+. .  o .  . .  . o
+. .  . .  . .  . .
+
+# %prog -fu -ta '⠉⠙ lala ⠑' --onerr=p
+CD lala E
+# %prog -fu -ta '⠉⠙ lala ⠑' --onerr=r
+CD??????E
+# %prog -fu -ta '⠉⠙ lala ⠑' --onerr=e
+  ...
+ValueError: unibr_2_ascbr failed to convert
+
+KNOWN BUGS
+
+--onerr p is not always working as expected. e.g.:
+# %prog -fa -tu FOOfoo --onerr=p # this is OK
+⠋⠕⠕foo
+# %prog -s -fa -tu FOOfoo --onerr=p # this is NOT
+⠋⠕⠕&//
+'''
+    parser = optparse.OptionParser(usage)
+    parser.add_option("-f", "", 
+                    action="store", dest="fromb",
+                    help='one character that specifies the braille type of input (see TYPES OF BRAILLE)')
+    parser.add_option("-t", "",
+                    action="store", dest="tob",
+                    help='one character that specifies the braille type for the output (see TYPES OF BRAILLE)')
+    parser.add_option("--onerr", "",
+                    action="store", dest="action", default='p', 
+                    help='''how to handle errors during conversions. Allowed values:
+p=pass input unchanged(default), e=raise an error, r=replace invalid chars''')
+    parser.add_option("--repl", "",
+                    action="store", dest="replace_char", default='?', 
+                    help='''the replacement string to use if you specify --onerr r
+(default is ?)''')
+    parser.add_option("-s", "", 
+                    action="store_true", dest="sixdot", default=False,
+                    help='strip dots 7,8 from all cells')
+    opt, args = parser.parse_args()
+    #print opt,args
+    
+    if args:
+        inp = [ u' '.join(args) ]
+    else:
+        # we'll read and translate stdin 
+        inp = sys.stdin
+        pass
+    
+    if opt.action.lower()=='p':
+        pybraille.on_conv_err = pybraille.ON_CONV_ERR_PASS
+    elif opt.action.lower()=='e':
+        pybraille.on_conv_err = pybraille.ON_CONV_ERR_RAISE
+    elif opt.action.lower()=='r':
+        pybraille.on_conv_err = pybraille.ON_CONV_ERR_REPLACE
+        pybraille.on_conv_err_replace_char = opt.replace_char
+        
+    fromb, tob = '',''
+    if opt.fromb: fromb = opt.fromb.lower()
+    if opt.tob: tob = opt.tob.lower()
+    
+    char2word = { 'a':'ascbr', 'u':'unibr', 'd':'dotbr', 'p':'psebr' }
+    if fromb in ['a','u','d'] and tob in ['a','u','d','p']:
+        if tob=='u':
+            conv_func = lambda x: x # function that returns input unaltered
+        else:
+            conv_func = getattr(pybraille, "unibr_2_%s" % char2word[tob])        
+        for line in inp:
+            l=line.decode('utf-8') # decode is needed if inp = sys.stdin
+            # 1st translate to unibr
+            if fromb<>'u':
+                to_unibr_func = getattr(pybraille, "%s_2_unibr" % char2word[fromb])        
+                unibr = to_unibr_func(l.strip('\r\n'))
+            else:
+                unibr = l.strip('\r\n')
+            # then strip 7,8 dots if requested
+            if opt.sixdot: unibr = pybraille.strip_dots78( unibr )
+            # finaly translate to -t format
+            out = conv_func(unibr)
+            if opt.sixdot and tob=='p': out.print_8dot_brl = False
+            print out
+    else:
+        parser.print_help()
+        exit(-1)
+       
+if __name__ == "__main__":
+    main()
