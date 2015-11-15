@@ -1,5 +1,7 @@
 # bconv
 
+## Description 
+
 There are various ways to represent Braille symbols (also called Braille cells) in print and in electronic form. This utility makes it easy to convert between them.
 
 These are the representations which I’ve come across during the last years:
@@ -40,3 +42,7 @@ You can start using bconv right away. Just note that `-f` stands for translate *
 Please note that **this is not a Braille translator**. It can’t convert plain text to Braille or vice versa. Use tools like liblouis for this job. If this sentence and the HELLO WORLD example above seems contradictory to you it's OK;  you just need to cover a bit more ground to grasp Braille.
 
 More info in this blog post: https://ndemou.wordpress.com/2012/12/28/bconv-convert-between-braille-representations/
+
+## Installation
+
+The code is only tested under Linux with python 2.6.5 and 2.7. To run it under Linux save both bconv and pybraille.py somewhere in your executables path and make bconv executable (`chmod u+x /path/to/saved/files/bconv`)
