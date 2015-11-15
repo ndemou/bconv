@@ -4,7 +4,7 @@
 
 There are various ways to represent Braille symbols (also called Braille cells) in print and in electronic form. This utility makes it easy to convert between them.
 
-These are the representations which I’ve come across during the last years:
+These are the representations which bconv supports:
 
 1. *Braille ASCII* (or more formally *The North American Braille ASCII Code*, also known as *SimBraille*) e.g.:
 
@@ -13,7 +13,7 @@ These are the representations which I’ve come across during the last years:
 1. *Unicode Braille* e.g.:
 
     ⠓⠑⠇⠇⠕
-(if you see nothing like Braille here your browser doesn't use a Unicode font that includes Braille Patterns)
+(if you see nothing like Braille just above your browser doesn't use a Unicode font that includes Braille Patterns)
 
 1.  *Dots Braille* e.g.:
 
