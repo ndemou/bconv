@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Licensed under the GNU General Public License, version 3.
@@ -14,9 +14,9 @@
 import pybraille
 import optparse
 import sys
+import importlib
 
 def main():
-    reload(sys).setdefaultencoding('utf8')
     usage = '''usage: %prog -f FROM -t TO [other options] [input]
     
 Convert from/to various typef of braille text. The supported TYPES OF BRAILLE
@@ -81,7 +81,7 @@ p=pass input unchanged(default), e=raise an error, r=replace invalid chars''')
     #print opt,args
     
     if args:
-        inp = [ u' '.join(args) ]
+        inp = [ ' '.join(args) ]
     else:
         # we'll read and translate stdin 
         inp = sys.stdin
@@ -105,10 +105,9 @@ p=pass input unchanged(default), e=raise an error, r=replace invalid chars''')
             conv_func = lambda x: x # function that returns input unaltered
         else:
             conv_func = getattr(pybraille, "unibr_2_%s" % char2word[tob])        
-        for line in inp:
-            l=line.decode('utf-8') # decode is needed if inp = sys.stdin
+        for l in inp:
             # 1st translate to unibr
-            if fromb<>'u':
+            if fromb!='u':
                 to_unibr_func = getattr(pybraille, "%s_2_unibr" % char2word[fromb])        
                 unibr = to_unibr_func(l.strip('\r\n'))
             else:
@@ -118,7 +117,7 @@ p=pass input unchanged(default), e=raise an error, r=replace invalid chars''')
             # finaly translate to -t format
             out = conv_func(unibr)
             if opt.sixdot and tob=='p': out.print_8dot_brl = False
-            print out
+            print(out)
     else:
         parser.print_help()
         exit(-1)
