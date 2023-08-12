@@ -229,7 +229,7 @@ def dotbr_2_unibr(dotbr, cell_delimiter='p', valid_chars='012345678,p() '):
     dotbr=dotbr.strip()
     if dotbr=='': return ''
     if cell_delimiter in dotbr:
-        if len(dotbr.split(cell_delimiter))>2:
+        if len(dotbr.split(cell_delimiter))>1:
             return ''.join([dotbr_2_unibr(e) for e in dotbr.split(cell_delimiter) if e!=''])
 
     for c in dotbr:
