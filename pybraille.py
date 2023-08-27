@@ -77,7 +77,7 @@ on_conv_err_replace_char = '?'
 
 # unibr to ascbr translation (based on wikipedia and BrailleUtils)
 _BrailleAscii__ascii =    " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)="
-_BrailleAscii__unicode = u"⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿"
+_BrailleAscii__unicode = "⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿"
 
 ########################################################################
 class PseudoBraille(str):
@@ -86,7 +86,7 @@ overided in order to print it as a pseudo-braille ascii text
 (it also has the print_8dot_brl property)
 
 Use it like this:
-   >>> pb = PseudoBraille(u'⠕⠓'.encode('utf-8')) #<----note the encoding
+   >>> pb = PseudoBraille('⠕⠓')
    >>> pb.print_8dot_brl = False
    >>> print pb
    o .  o .
@@ -96,16 +96,16 @@ Use it like this:
     print_8dot_brl = True # set it to false to print 6dot pseudo braille
     def __str__(self):
         line=['','','','']
-        for c in self.decode('utf-8'):
-            o = ord(c)-0x2800 
+        for c in self:
+            o = ord(c)-0x2800
             if o>=0 and o<=0xff:
-                line[0] += ('o' if (o & 0x01)<>0 else '.') + ' ' + ('o' if (o & 0x08)<>0 else '.') + '  '
-                line[1] += ('o' if (o & 0x02)<>0 else '.') + ' ' + ('o' if (o & 0x10)<>0 else '.') + '  '
-                line[2] += ('o' if (o & 0x04)<>0 else '.') + ' ' + ('o' if (o & 0x20)<>0 else '.') + '  '
-                line[3] += ('o' if (o & 0x40)<>0 else '.') + ' ' + ('o' if (o & 0x80)<>0 else '.') + '  '
+                line[0] += ('o' if (o & 0x01)!=0 else '.') + ' ' + ('o' if (o & 0x08)!=0 else '.') + '  '
+                line[1] += ('o' if (o & 0x02)!=0 else '.') + ' ' + ('o' if (o & 0x10)!=0 else '.') + '  '
+                line[2] += ('o' if (o & 0x04)!=0 else '.') + ' ' + ('o' if (o & 0x20)!=0 else '.') + '  '
+                line[3] += ('o' if (o & 0x40)!=0 else '.') + ' ' + ('o' if (o & 0x80)!=0 else '.') + '  '
             else:
                 if on_conv_err == ON_CONV_ERR_RAISE:
-                    raise ValueError,'Non unicode braille PseudoBraille string %s' % self
+                    raise ValueError('Non unicode braille PseudoBraille string %s' % self)
                 else:
                     line[0] += 'INV  '
                     line[1] += 'ALI  '
@@ -137,13 +137,13 @@ def unibr_2_ascbr(unibr, liberal_input = True):
 liberal_input True means
 a) treat lower case letters as upper case
 b) pass invalid chars to output untranslated'''
-    if len(unibr)<>1:
+    if len(unibr)!=1:
         return ''.join([unibr_2_ascbr(e) for e in unibr])
     try:
         out = _BrailleAscii__ascii[ord(unibr)-0x2800]
     except:
         if on_conv_err == ON_CONV_ERR_RAISE:
-            raise ValueError,'unibr_2_ascbr failed to convert %s' % unibr
+            raise ValueError('unibr_2_ascbr failed to convert %s' % unibr)
         elif on_conv_err == ON_CONV_ERR_PASS:
             out = unibr
         else: 
@@ -156,25 +156,25 @@ def unibr_2_dotbr(unibr, prefix = 'p', delimiter = '', suffix = ''):
     Setting prefix to '(' delimiter to ',' and suffix to ')' will return another
     style of dotbr: "(1,2,3,5)". You can customize them as you wish.
     '''
-    if len(unibr)<>1:
+    if len(unibr)!=1:
         return ''.join([unibr_2_dotbr(e) for e in unibr])
 
     o = ord(unibr)-0x2800     
     if o>=0 and o<=0xff:
         dots = prefix
-        if (o & 0x01)<>0: dots += '1' + delimiter
-        if (o & 0x02)<>0: dots += '2' + delimiter
-        if (o & 0x04)<>0: dots += '3' + delimiter
-        if (o & 0x08)<>0: dots += '4' + delimiter
-        if (o & 0x10)<>0: dots += '5' + delimiter
-        if (o & 0x20)<>0: dots += '6' + delimiter
-        if (o & 0x40)<>0: dots += '7' + delimiter
-        if (o & 0x80)<>0: dots += '8' + delimiter
+        if (o & 0x01)!=0: dots += '1' + delimiter
+        if (o & 0x02)!=0: dots += '2' + delimiter
+        if (o & 0x04)!=0: dots += '3' + delimiter
+        if (o & 0x08)!=0: dots += '4' + delimiter
+        if (o & 0x10)!=0: dots += '5' + delimiter
+        if (o & 0x20)!=0: dots += '6' + delimiter
+        if (o & 0x40)!=0: dots += '7' + delimiter
+        if (o & 0x80)!=0: dots += '8' + delimiter
         if dots == prefix: dots = prefix + '0'
         dots = dots.rstrip(delimiter) + suffix
     else:
         if on_conv_err == ON_CONV_ERR_RAISE:
-            raise ValueError,'unibr_2_dotbr got non unicode braille char %s' % unibr
+            raise ValueError('unibr_2_dotbr got non unicode braille char %s' % unibr)
         elif on_conv_err == ON_CONV_ERR_PASS:
             dots = unibr
         else: 
@@ -183,7 +183,7 @@ def unibr_2_dotbr(unibr, prefix = 'p', delimiter = '', suffix = ''):
     
 def unibr_2_psebr(unibr):
     '''convert unibr(⠗) to list of psebr's '''
-    return PseudoBraille(unibr.encode('utf-8'))
+    return PseudoBraille(unibr)
         
 def ascbr_2_dotbr(ascbr):
     return unibr_2_dotbr(ascbr_2_unibr(ascbr))
@@ -193,13 +193,13 @@ def ascbr_2_psebr(ascbr):
 
 def ascbr_2_unibr(ascbr, liberal_input = True):
     '''convert ascbr(R) to unibr(⠗)'''
-    if len(ascbr)<>1:
+    if len(ascbr)!=1:
         return ''.join([ascbr_2_unibr(e) for e in ascbr])
     try:
-        out = unichr(0x2800 + _BrailleAscii__ascii.index(ascbr))
+        out = chr(0x2800 + _BrailleAscii__ascii.index(ascbr))
     except:
         if on_conv_err == ON_CONV_ERR_RAISE:
-            raise ValueError,'ascbr_2_unibr failed to convert %s' % ascbr
+            raise ValueError('ascbr_2_unibr failed to convert %s' % ascbr)
         elif on_conv_err == ON_CONV_ERR_PASS:
             out = ascbr
         else: 
@@ -229,13 +229,13 @@ def dotbr_2_unibr(dotbr, cell_delimiter='p', valid_chars='012345678,p() '):
     dotbr=dotbr.strip()
     if dotbr=='': return ''
     if cell_delimiter in dotbr:
-        if len(dotbr.split(cell_delimiter))>2:
-            return ''.join([dotbr_2_unibr(e) for e in dotbr.split(cell_delimiter) if e<>''])
+        if len(dotbr.split(cell_delimiter))>1:
+            return ''.join([dotbr_2_unibr(e) for e in dotbr.split(cell_delimiter) if e!=''])
 
     for c in dotbr:
         if not c in valid_chars:
             if on_conv_err == ON_CONV_ERR_RAISE:
-                raise ValueError,'dotbr_2_unibr found invalid char %s' % c
+                raise ValueError('dotbr_2_unibr found invalid char %s' % c)
             elif on_conv_err == ON_CONV_ERR_PASS:
                 return dotbr
             else: 
@@ -250,17 +250,17 @@ def dotbr_2_unibr(dotbr, cell_delimiter='p', valid_chars='012345678,p() '):
     if ('6' in dotbr): o +=  0x20
     if ('7' in dotbr): o +=  0x40
     if ('8' in dotbr): o +=  0x80
-    return unichr( 0x2800 + o )
+    return chr( 0x2800 + o )
 
 def strip_dots78(unibr):
     '''strips dots 7,8 from all cells of unibr'''
-    if len(unibr)<>1:
+    if len(unibr)!=1:
         return ''.join([strip_dots78(e) for e in unibr])
-    return unichr(ord(unibr) & 0x283f)
+    return chr(ord(unibr) & 0x283f)
 
 def is_six_dot(unibr):
     '''returns True if there are no dots 7/8 in input'''
-    if len(unibr)<>1:
+    if len(unibr)!=1:
         return min([is_six_dot(e) for e in unibr])
     return ((ord(unibr) & 0xC0) == 0)
 
@@ -268,18 +268,18 @@ if __name__ == "__main__":
     test_braille_ascii()
     
     for o in range(0,256):
-        unibr = unichr(0x2800 + o)
+        unibr = chr(0x2800 + o)
         #print o, hex(0x2800 + o), unichr(0x28ff)+ unibr, unibr_2_dotbr(unibr), dotbr_2_unibr(unibr_2_dotbr(unibr))
-        print u"%c%s %s %s" % (0x28ff,unibr, unibr_2_dotbr(unibr, '(',',',')'), is_six_dot(unibr))
-        print unibr_2_psebr(unibr)
-        print 
+        print("%c%s %s %s" % (0x28ff,unibr, unibr_2_dotbr(unibr, '(',',',')'), is_six_dot(unibr)))
+        print(unibr_2_psebr(unibr))
+        print() 
         assert dotbr_2_unibr(unibr_2_dotbr(unibr)) == unibr
     
     for o in range(0,256):
-        if o % 8 == 0: print 
-        unibr = unichr(0x2800 + o)
-        print '%9s=%s' % (unibr_2_dotbr(unibr), unibr),
-    print
+        if o % 8 == 0: print() 
+        unibr = chr(0x2800 + o)
+        print('%9s=%s' % (unibr_2_dotbr(unibr), unibr), end=' ')
+    print()
         
     ascbr_table = '''
 ABCDEFGHIJ
@@ -290,32 +290,32 @@ UVXYZ&=(!)
 /+#>'-
 @^_".;, 
 '''
-    for line in [i for i in ascbr_table.split('\n') if i.strip()<>'']:
+    for line in [i for i in ascbr_table.split('\n') if i.strip()!='']:
         for ascbr in line:
-            print '%s%s ' % (ascbr, ascbr_2_unibr(ascbr)),
-        print
+            print('%s%s ' % (ascbr, ascbr_2_unibr(ascbr)), end=' ')
+        print()
     
-    for line in [i for i in ascbr_table.split('\n') if i.strip()<>'']:
-        print unibr_2_psebr(ascbr_2_unibr(line))
-        print
+    for line in [i for i in ascbr_table.split('\n') if i.strip()!='']:
+        print(unibr_2_psebr(ascbr_2_unibr(line)))
+        print()
      
     pass        
 
     ascbr = 'ABCDEFGHIJ'
     unibr = ascbr_2_unibr(ascbr)
     dotbr = unibr_2_dotbr(unibr)
-    print ascbr 
-    print unibr
-    print dotbr
-    print dotbr_2_unibr(dotbr)
+    print(ascbr) 
+    print(unibr)
+    print(dotbr)
+    print(dotbr_2_unibr(dotbr))
     assert dotbr_2_unibr(dotbr) == unibr
     pb8 = unibr_2_psebr(unibr)
     pb6 = unibr_2_psebr(unibr)
     pb6.print_8dot_brl = False
-    print 'printing 8dots psudo braille'
-    print pb8
-    print 'printing 6dots psudo braille'
-    print pb6
-    print u'⠙⠬⠛', '6dot braille' if is_six_dot(u'⠙⠬⠛') else '8dot braille'
-    print u'⠙⠬⢹', '6dot braille' if is_six_dot(u'⠙⠬⢹') else '8dot braille'
-    print strip_dots78(u'⠙⠬⢹'), '6dot braille' if is_six_dot(strip_dots78(u'⠙⠬⢹')) else '8dot braille'
+    print('printing 8dots psudo braille')
+    print(pb8)
+    print('printing 6dots psudo braille')
+    print(pb6)
+    print('⠙⠬⠛', '6dot braille' if is_six_dot('⠙⠬⠛') else '8dot braille')
+    print('⠙⠬⢹', '6dot braille' if is_six_dot('⠙⠬⢹') else '8dot braille')
+    print(strip_dots78('⠙⠬⢹'), '6dot braille' if is_six_dot(strip_dots78('⠙⠬⢹')) else '8dot braille')
