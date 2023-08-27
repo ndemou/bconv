@@ -13,7 +13,7 @@ These are the representations which bconv supports:
 1. *Unicode Braille* e.g.:
 
     ⠓⠑⠇⠇⠕
-(if you see nothing like Braille just above your browser doesn't use a Unicode font that includes Braille Patterns)
+(if you see nothing like Braille just above, then your browser doesn't use a Unicode font that includes Braille Patterns)
 
 1.  *Dots Braille* e.g.:
 
@@ -23,9 +23,9 @@ These are the representations which bconv supports:
 
 1.  *Pseudo Braille* e.g.:
 
-      o o  o .  o o
-      o .  . o  o o
-      o .  . .  . .
+        o o  o .  o o   
+        o .  . o  o o   
+        o .  . .  . .
 
 As an example suppose that you have the Braille ASCII text `HELLO WORLD` and you want to convert it to Unicode Braille. What you need to run is this:
 
@@ -37,7 +37,7 @@ or this:
     # echo 'HELLO WORLD' | bconv -fa -tu
     ⠓⠑⠇⠇⠕⠀⠺⠕⠗⠇⠙
 
-You can start using bconv right away. Just note that `-f` stands for translate **f**rom and `-t` for translate **t**o. After the `-f` and `-t` you should add one character to specify the representation (valid characters are a,d,p and u for **A**SCII, **D**ot, **P**seudo or **U**nicode Braille respectively). Finally note that you can have Pseudo Braille only as the output of the conversion. All others may appear either as input or as output. Run bconv without any parameters too get a more detailed help on usage
+You can start using bconv right away. Just note that `-f` stands for translate **f**rom and `-t` for translate **t**o. After the `-f` and `-t` you should add one character to specify the representation (valid characters are a,d,p and u for **A**SCII, **D**ot, **P**seudo or **U**nicode Braille respectively). Finally note that you can have Pseudo Braille only as the output of the conversion. All others may appear either as input or as output. Run bconv without any parameters to get a more detailed help on usage
 
 Please note that **this is not a Braille translator**. It can’t convert plain text to Braille or vice versa. Use tools like liblouis for this job. If this sentence and the HELLO WORLD example above seems contradictory to you it's OK;  you just need to cover a bit more ground to grasp Braille.
 
