@@ -8,18 +8,18 @@ These are the representations which bconv supports:
 
 1. *Braille ASCII* (or more formally *The North American Braille ASCII Code*, also known as *SimBraille*) e.g.:
 
-    HELLO
+       HELLO
 
 1. *Unicode Braille* e.g.:
 
-    ⠓⠑⠇⠇⠕
+       ⠓⠑⠇⠇⠕
 (if you see nothing like Braille just above, then your browser doesn't use a Unicode font that includes Braille Patterns)
 
 1.  *Dots Braille* e.g.:
 
-    p125p15p123p123p135
-    (125)(15)(123)(123)(135)
-    ...
+        p125p15p123p123p135
+        (125)(15)(123)(123)(135)
+        ...
 
 1.  *Pseudo Braille* e.g.:
 
