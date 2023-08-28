@@ -45,4 +45,6 @@ More info in this blog post: https://ndemou.wordpress.com/2012/12/28/bconv-conve
 
 ## Installation
 
-The code is only tested under Linux with python 2.6.5 and 2.7. To run it under Linux save both bconv and pybraille.py somewhere in your executables path and make bconv executable (`chmod u+x /path/to/saved/files/bconv`)
+The code was tested under Linux with python 3. 
+
+To run it save both bconv and pybraille.py somewhere in your path and make bconv executable (`chmod u+x /path/to/saved/files/bconv`)
